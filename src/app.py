@@ -25,19 +25,118 @@ activities = {
         "description": "Learn strategies and compete in chess tournaments",
         "schedule": "Fridays, 3:30 PM - 5:00 PM",
         "max_participants": 12,
-        "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
+        "participants": ["michael@mergington.edu", "daniel@mergington.edu"],
+        "translations": {
+            "sl": {
+                "name": "Šahovski krožek",
+                "description": "Naučite se strategij in tekmujte na šahovskih turnirjih",
+                "schedule": "Petki, 15.30–17.00"
+            }
+        }
     },
     "Programming Class": {
         "description": "Learn programming fundamentals and build software projects",
         "schedule": "Tuesdays and Thursdays, 3:30 PM - 4:30 PM",
         "max_participants": 20,
-        "participants": ["emma@mergington.edu", "sophia@mergington.edu"]
+        "participants": ["emma@mergington.edu", "sophia@mergington.edu"],
+        "translations": {
+            "sl": {
+                "name": "Tečaj programiranja",
+                "description": "Spoznajte osnove programiranja in ustvarjajte programske projekte",
+                "schedule": "Torki in četrtki, 15.30–16.30"
+            }
+        }
     },
     "Gym Class": {
         "description": "Physical education and sports activities",
         "schedule": "Mondays, Wednesdays, Fridays, 2:00 PM - 3:00 PM",
         "max_participants": 30,
-        "participants": ["john@mergington.edu", "olivia@mergington.edu"]
+        "participants": ["john@mergington.edu", "olivia@mergington.edu"],
+        "translations": {
+            "sl": {
+                "name": "Športna vadba",
+                "description": "Športna vzgoja in športne dejavnosti",
+                "schedule": "Ponedeljki, srede in petki, 14.00–15.00"
+            }
+        }
+    },
+    "Basketball Team": {
+        "description": "Practice basketball skills and compete in team games",
+        "schedule": "Tuesdays and Thursdays, 4:00 PM - 5:30 PM",
+        "max_participants": 15,
+        "participants": [],
+        "translations": {
+            "sl": {
+                "name": "Košarkarska ekipa",
+                "description": "Vadite košarkarske veščine in tekmujte na ekipnih tekmah",
+                "schedule": "Torki in četrtki, 16.00–17.30"
+            }
+        }
+    },
+    "Track and Field": {
+        "description": "Train for running, jumping, and throwing events",
+        "schedule": "Mondays and Wednesdays, 3:30 PM - 5:00 PM",
+        "max_participants": 20,
+        "participants": [],
+        "translations": {
+            "sl": {
+                "name": "Atletski krožek",
+                "description": "Vadite tek, skoke in mete",
+                "schedule": "Ponedeljki in srede, 15.30–17.00"
+            }
+        }
+    },
+    "Art Club": {
+        "description": "Explore drawing, painting, and other visual art projects",
+        "schedule": "Wednesdays, 3:30 PM - 5:00 PM",
+        "max_participants": 15,
+        "participants": [],
+        "translations": {
+            "sl": {
+                "name": "Likovni krožek",
+                "description": "Raziskujte risanje, slikanje in druge likovne projekte",
+                "schedule": "Srede, 15.30–17.00"
+            }
+        }
+    },
+    "Drama Club": {
+        "description": "Practice acting and collaborate on school performances",
+        "schedule": "Fridays, 3:30 PM - 5:00 PM",
+        "max_participants": 20,
+        "participants": [],
+        "translations": {
+            "sl": {
+                "name": "Dramski krožek",
+                "description": "Vadite igro in sodelujte pri šolskih predstavah",
+                "schedule": "Petki, 15.30–17.00"
+            }
+        }
+    },
+    "Debate Club": {
+        "description": "Research topics and develop persuasive speaking skills",
+        "schedule": "Tuesdays, 3:30 PM - 4:30 PM",
+        "max_participants": 16,
+        "participants": [],
+        "translations": {
+            "sl": {
+                "name": "Debatni krožek",
+                "description": "Raziskujte teme in razvijajte veščine prepričljivega govora",
+                "schedule": "Torki, 15.30–16.30"
+            }
+        }
+    },
+    "Science Club": {
+        "description": "Explore scientific ideas through experiments and projects",
+        "schedule": "Thursdays, 3:30 PM - 4:30 PM",
+        "max_participants": 18,
+        "participants": [],
+        "translations": {
+            "sl": {
+                "name": "Znanstveni krožek",
+                "description": "Raziskujte znanstvene zamisli s poskusi in projekti",
+                "schedule": "Četrtki, 15.30–16.30"
+            }
+        }
     }
 }
 
@@ -62,6 +161,30 @@ def signup_for_activity(activity_name: str, email: str):
     # Get the specific activity
     activity = activities[activity_name]
 
+    # Check if the student is already signed up
+    if email in activity["participants"]:
+        raise HTTPException(status_code=409, detail="Student already signed up for this activity")
+
+    # Check if the activity is full
+    if len(activity["participants"]) >= activity["max_participants"]:
+        raise HTTPException(status_code=409, detail="Activity is full")
+
     # Add student
     activity["participants"].append(email)
     return {"message": f"Signed up {email} for {activity_name}"}
+
+
+@app.delete("/activities/{activity_name}/signup")
+def unregister_from_activity(activity_name: str, email: str):
+    """Unregister a student from an activity."""
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
+
+    try:
+        activities[activity_name]["participants"].remove(email)
+    except ValueError:
+        raise HTTPException(
+            status_code=404, detail="Student not signed up for this activity"
+        ) from None
+
+    return {"message": f"Unregistered {email} from {activity_name}"}
