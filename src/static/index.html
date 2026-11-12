@@ -3,46 +3,156 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <title>Mergington High School Activities</title>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header>
-      <h1>Mergington High School</h1>
-      <h2>Extracurricular Activities</h2>
+    <a class="skip-link" href="#main-content" data-i18n="skip">Skip to content</a>
+
+    <header class="site-header">
+      <div class="page-shell header-content">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M7 23V9l9 9 9-9v14" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <strong>Mergington</strong>
+            <span data-i18n="schoolLabel">HIGH SCHOOL</span>
+          </span>
+        </div>
+
+        <div class="header-actions">
+          <span class="header-label" data-i18n="studentLife">STUDENT LIFE</span>
+          <div class="language-switch" role="group" aria-label="Language" data-i18n-aria-label="language">
+            <button type="button" data-language="en" lang="en" aria-label="EN English" title="English" aria-pressed="true">EN</button>
+            <button type="button" data-language="sl" lang="sl" aria-label="SL Slovenščina" title="Slovenščina" aria-pressed="false">SL</button>
+          </div>
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false" title="Dark mode" data-i18n-title="darkMode" hidden>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20 14.2A8.3 8.3 0 0 1 9.8 4 8.5 8.5 0 1 0 20 14.2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span data-i18n="darkMode">Dark mode</span>
+            <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+          </button>
+        </div>
+      </div>
     </header>
 
-    <main>
-      <section id="activities-container">
-        <h3>Available Activities</h3>
-        <div id="activities-list">
-          <!-- Activities will be loaded here -->
-          <p>Loading activities...</p>
+    <main id="main-content" class="page-shell" tabindex="-1">
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="heroEyebrow">LIFE OUTSIDE THE CLASSROOM</span></p>
+          <h1 id="hero-heading"><span data-i18n="heroLineOne">Find your people.</span><br /><span class="hero-accent" data-i18n="heroLineTwo">Find your thing.</span></h1>
+          <p class="hero-description" data-i18n="heroDescription">
+            Try something new, make connections, and do more of what you love.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#activities-container">
+              <span data-i18n="exploreActivities">Explore activities</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+            <a class="hero-link" href="#signup-container">
+              <span data-i18n="signupShortcut">Ready to sign up?</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 17 17 7M7 7h10v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-orbit art-orbit-one"></div>
+          <div class="art-orbit art-orbit-two"></div>
+          <div class="art-backdrop"></div>
+          <div class="art-card">
+            <div class="art-card-top">
+              <span class="art-spark">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="m12 2 2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2L12 2Z" fill="currentColor" />
+                </svg>
+              </span>
+              <span data-i18n="studentLife">STUDENT LIFE</span>
+            </div>
+            <strong><span data-i18n="artLineOne">Make space</span><br /><span data-i18n="artLineTwo">for more.</span></strong>
+            <span class="art-card-footer" data-i18n="artFooter">EXPLORE &bull; CONNECT &bull; BELONG</span>
+          </div>
+          <span class="art-sticker">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8m0-12.8L5.6 18.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="art-dot art-dot-one"></span>
+          <span class="art-dot art-dot-two"></span>
         </div>
       </section>
 
-      <section id="signup-container">
-        <h3>Sign Up for an Activity</h3>
-        <form id="signup-form">
-          <div class="form-group">
-            <label for="email">Student Email:</label>
-            <input type="email" id="email" required placeholder="your-email@mergington.edu" />
+      <div class="content-layout">
+        <section id="activities-container" class="activities-section" aria-labelledby="activities-heading" tabindex="-1">
+          <div class="section-heading">
+            <div>
+              <p class="section-eyebrow" data-i18n="activitiesEyebrow">DISCOVER YOUR COMMUNITY</p>
+              <h2 id="activities-heading" data-i18n="exploreActivities">Explore activities</h2>
+              <p data-i18n="activitiesDescription">Clubs, classes, and teams for every interest.</p>
+            </div>
+            <span class="section-tag" data-i18n="allActivities">ALL ACTIVITIES</span>
           </div>
-          <div class="form-group">
-            <label for="activity">Select Activity:</label>
-            <select id="activity" required>
-              <option value="">-- Select an activity --</option>
-              <!-- Activity options will be loaded here -->
-            </select>
+          <div id="activities-list" class="activities-grid">
+            <p class="loading-message" data-i18n="loading">Loading activities...</p>
           </div>
-          <button type="submit">Sign Up</button>
-        </form>
-        <div id="message" class="hidden"></div>
-      </section>
+        </section>
+
+        <aside id="signup-container" class="signup-panel" aria-labelledby="signup-heading" tabindex="-1">
+          <div class="signup-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <p class="section-eyebrow" data-i18n="signupEyebrow">READY WHEN YOU ARE</p>
+          <h2 id="signup-heading" data-i18n="signupHeading">Join an activity</h2>
+          <p class="signup-description" data-i18n="signupDescription">Found your thing? Sign up and save your spot.</p>
+
+          <form id="signup-form">
+            <div class="form-group">
+              <label for="email" data-i18n="emailLabel">Student email</label>
+              <input type="email" id="email" required autocomplete="email" placeholder="you@mergington.edu" data-i18n-placeholder="emailPlaceholder" />
+            </div>
+            <div class="form-group">
+              <label for="activity" data-i18n="activityLabel">Choose an activity</label>
+              <select id="activity" required>
+                <option value="" data-i18n="selectActivity">Select an activity</option>
+              </select>
+            </div>
+            <button class="button signup-button" type="submit">
+              <span data-i18n="signupButton">Sign up for an activity</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+          <div id="message" class="message hidden" role="status" aria-live="polite"></div>
+          <p class="signup-help">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7" />
+              <path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span data-i18n="signupHelp">You can sign up for more than one activity.</span>
+          </p>
+        </aside>
+      </div>
     </main>
 
-    <footer>
-      <p>&copy; 2023 Mergington High School</p>
+    <footer class="site-footer">
+      <div class="page-shell footer-content">
+        <span data-i18n="footerSchool">&copy; Mergington High School</span>
+        <span data-i18n="footerTagline">Find your people. Find your thing.</span>
+      </div>
     </footer>
 
     <script src="app.js"></script>
