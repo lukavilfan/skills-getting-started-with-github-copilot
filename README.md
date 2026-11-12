@@ -22,7 +22,19 @@ Activity names, descriptions, and schedules have Slovenian translations in [the 
 ## Front-end tests
 
 With Node.js 18 or later installed, run `node --test tests/*.test.js`.
-For the activity API translation tests, run `python -m unittest discover -s tests -p 'test_*.py'`.
+
+## Backend tests
+
+From the repository root, install the dependencies and run the pytest suite:
+
+```sh
+python -m pip install -r requirements.txt
+python -m pytest
+```
+
+Backend tests live in `tests/`, use FastAPI's in-process TestClient, and follow
+Arrange-Act-Assert. Shared fixtures isolate activity data for each test, so no
+running server is needed.
 
 &copy; 2025 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
 

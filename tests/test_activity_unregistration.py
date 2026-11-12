@@ -1,50 +1,72 @@
-import unittest
+from copy import deepcopy
 
-from fastapi.testclient import TestClient
-
-from src.app import activities, app
+import pytest
 
 
-class ActivityUnregistrationTests(unittest.TestCase):
-    def setUp(self):
-        self.client = TestClient(app)
-        self.participants = activities["Chess Club"]["participants"]
-        original_participants = self.participants[:]
-        self.addCleanup(self.participants.__setitem__, slice(None), original_participants)
+def test_unregister_removes_only_the_requested_student(client, activity_data):
+    email = "student+tag@example.test"
+    participants = activity_data["Chess Club"]["participants"]
+    participants.append(email)
+    expected_participants = participants[:-1]
 
-    def test_unregister_frees_a_spot_without_removing_other_students(self):
-        capacity = activities["Chess Club"]["max_participants"]
-        email = "student+tag@example.test"
-        self.participants[:] = [
-            f"student{index}@example.test" for index in range(capacity - 1)
-        ] + [email]
-        other_participants = self.participants[:-1]
+    response = client.delete(
+        "/activities/Chess%20Club/signup", params={"email": email}
+    )
+    listing = client.get("/activities")
 
-        full = self.client.post("/activities/Chess%20Club/signup", params={"email": "new@example.test"})
-        self.assertEqual(full.status_code, 409)
-
-        response = self.client.delete("/activities/Chess%20Club/signup", params={"email": email})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["message"], f"Unregistered {email} from Chess Club")
-        self.assertEqual(self.client.get("/activities").json()["Chess Club"]["participants"], other_participants)
-
-        signup = self.client.post("/activities/Chess%20Club/signup", params={"email": email})
-        self.assertEqual(signup.status_code, 200)
-        self.assertEqual(self.participants, other_participants + [email])
-
-    def test_unregister_rejects_missing_activity_or_participant(self):
-        original_participants = self.participants[:]
-        cases = [
-            ("/activities/Unknown/signup", "Activity not found"),
-            ("/activities/Chess%20Club/signup", "Student not signed up for this activity"),
-        ]
-        for path, detail in cases:
-            with self.subTest(path=path):
-                response = self.client.delete(path, params={"email": "missing@example.test"})
-                self.assertEqual(response.status_code, 404)
-                self.assertEqual(response.json()["detail"], detail)
-                self.assertEqual(self.participants, original_participants)
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": f"Unregistered {email} from Chess Club"
+    }
+    assert listing.status_code == 200
+    assert listing.json()["Chess Club"]["participants"] == expected_participants
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_unregister_frees_a_spot_without_removing_other_students(
+    client, activity_data
+):
+    activity = activity_data["Chess Club"]
+    email = "student+tag@example.test"
+    other_participants = [
+        f"student{index}@example.test"
+        for index in range(activity["max_participants"] - 1)
+    ]
+    activity["participants"] = other_participants + [email]
+
+    removal = client.delete(
+        "/activities/Chess%20Club/signup", params={"email": email}
+    )
+    participants_after_removal = list(activity["participants"])
+    signup = client.post(
+        "/activities/Chess%20Club/signup", params={"email": email}
+    )
+
+    assert removal.status_code == 200
+    assert removal.json() == {
+        "message": f"Unregistered {email} from Chess Club"
+    }
+    assert participants_after_removal == other_participants
+    assert signup.status_code == 200
+    assert activity["participants"] == other_participants + [email]
+
+
+@pytest.mark.parametrize(
+    ("activity_name", "detail"),
+    [
+        ("Unknown", "Activity not found"),
+        ("Chess Club", "Student not signed up for this activity"),
+    ],
+)
+def test_unregister_rejects_missing_activity_or_participant(
+    client, activity_data, activity_name, detail
+):
+    original_data = deepcopy(activity_data)
+    email = "missing@example.test"
+
+    response = client.delete(
+        f"/activities/{activity_name}/signup", params={"email": email}
+    )
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": detail}
+    assert activity_data == original_data
